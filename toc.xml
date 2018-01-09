@@ -1,4 +1,4 @@
-<Addon Author="Aramunn" APIVersion="16" Version="80085" Name="AluraRanksViewer" Description="Viewer for Alura's Ranking System">
+<Addon Author="Aramunn" APIVersion="16" Version="80085" Name="AluraRanksViewer" Description="Viewer for Alura&apos;s Ranking System">
     <Script Name="AluraRanksViewer.lua"/>
     <Form Name="AluraRanksViewer.xml"/>
 </Addon>
