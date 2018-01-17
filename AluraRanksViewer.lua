@@ -1,4 +1,7 @@
-local AluraRanksViewer = {}
+local AluraRanksViewer = {
+  arData = {},
+  bRaidOnly = false,
+}
 
 local knColumns     = string.byte("R") - string.byte("A") + 1
 local knNameColumn  = string.byte("A") - string.byte("A") + 1
@@ -25,12 +28,18 @@ function AluraRanksViewer:LoadMainWindow()
     self.wndMain:Destroy()
   end
   self.wndMain = Apollo.LoadForm(self.xmlDoc, "Main", nil, self)
+  self.wndMain:FindChild("Raid"):SetCheck(self.bRaidOnly)
+  self:UpdateGrid()
 end
 
 function AluraRanksViewer:OnRaidCheck(wndHandler, wndControl)
+  self.bRaidOnly = true
+  self:UpdateGrid()
 end
 
 function AluraRanksViewer:OnRaidUncheck(wndHandler, wndControl)
+  self.bRaidOnly = false
+  self:UpdateGrid()
 end
 
 function AluraRanksViewer:OnImport(wndHandler, wndControl)
@@ -47,13 +56,8 @@ function AluraRanksViewer:OnImport(wndHandler, wndControl)
     self:Print("Failed to parse")
     return
   end
-  local wndGrid = self.wndMain:FindChild("Grid")
-  wndGrid:DeleteAll()
-  for _,row in ipairs(arData) do
-    local nRow = wndGrid:AddRow("blah")
-    wndGrid:SetCellText(nRow, 1, row[knNameColumn])
-    wndGrid:SetCellText(nRow, 2, row[knRankColumn])
-  end
+  self.arData = arData
+  self:UpdateGrid()
 end
 
 function AluraRanksViewer:ParseCsv(strCsv)
@@ -70,10 +74,44 @@ function AluraRanksViewer:ParseCsv(strCsv)
   return arTable
 end
 
+function AluraRanksViewer:UpdateGrid()
+  local wndGrid = self.wndMain:FindChild("Grid")
+  wndGrid:DeleteAll()
+  if not self.arData then return end
+  for _,arRow in ipairs(self.arData) do
+    self:AddRow(wndGrid, arRow)
+  end
+end
+
+function AluraRanksViewer:AddRow(wndGrid, arRow)
+  local strName = arRow[knNameColumn]
+  local strRank = arRow[knRankColumn]
+  if self.bRaidOnly then
+    --TODO
+  end
+  local nRow = wndGrid:AddRow("blah")
+  wndGrid:SetCellText(nRow, 1, strName)
+  wndGrid:SetCellText(nRow, 2, strRank)
+end
+
 function AluraRanksViewer:OnClose(wndHandler, wndControl)
   if self.wndMain and self.wndMain:IsValid() then
     self.wndMain:Destroy()
   end
+end
+
+function AluraRanksViewer:OnSave(eLevel)
+  if eLevel ~= GameLib.CodeEnumAddonSaveLevel.Realm then return nil end
+  return {
+    arData = self.arData,
+    bRaidOnly = self.bRaidOnly,
+  }
+end
+
+function AluraRanksViewer:OnRestore(eLevel, tSave)
+  if eLevel ~= GameLib.CodeEnumAddonSaveLevel.Realm then return end
+  self.arData = tSave.arData
+  self.bRaidOnly = tSave.bRaidOnly
 end
 
 function AluraRanksViewer:new(o)
