@@ -12,7 +12,10 @@ local knColumns     = string.byte("R") - string.byte("A") + 1
 local knNameColumn  = string.byte("A") - string.byte("A") + 1
 local knRankColumn  = string.byte("R") - string.byte("A") + 1
 
-local ktNameMap = {}
+local ktNameMap = {
+  "Aramunn" = "Via Aramunn",
+  "Ele" = "Ele Yasam",
+}
 
 function AluraRanksViewer:FindSystemChannel()
   for idx, channelCurrent in ipairs(ChatSystemLib.GetChannels()) do
