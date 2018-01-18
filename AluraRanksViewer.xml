@@ -16,6 +16,8 @@
         <Control Class="Grid" LAnchorPoint="0" LAnchorOffset="3" TAnchorPoint="0" TAnchorOffset="50" RAnchorPoint="1" RAnchorOffset="-3" BAnchorPoint="1" BAnchorOffset="-3" RelativeToClient="1" Font="Default" Text="" BGColor="UI_WindowBGDefault" TextColor="UI_WindowTextDefault" Template="Holo_ScrollList" TooltipType="OnCursor" Name="Grid" TooltipColor="" MultiColumn="1" SelectWholeRow="1" Tooltip="" CellBGNormalColor="" CellBGSelectedColor="" CellBGNormalFocusColor="" CellBGSelectedFocusColor="" TextNormalColor="" TextSelectedColor="" TextNormalFocusColor="" TextSelectedFocusColor="" VScroll="1" Border="1" NewWindowDepth="1" HeaderRow="1" UseTemplateBG="1" HeaderBG="BK3:btnHolo_ListView_Top" CellBGBase="BK3:btnHolo_ListView_Simple" RowHeight="40" HeaderHeight="30" HorzRowMargin="0" HorzCellMargin="4" VertRowMargin="0" ImageTextSpacing="11" AutoSizeX="0" DT_CENTER="0" DT_VCENTER="0">
             <Column Name="Name" Width="300" TextColor="White" Image="" MinWidth="10" MaxWidth="2048" MergeLeft="0" SimpleSort="1" DT_VCENTER="1"/>
             <Column Name="Rank" Width="270" TextColor="White" Image="" MinWidth="10" MaxWidth="2048" MergeLeft="0" SimpleSort="1" DT_VCENTER="1"/>
+            <Event Name="MouseButtonUp" Function="OnMouseButtonUp"/>
+            <Event Name="MouseWheel" Function="OnMouseWheel"/>
         </Control>
         <Control Class="EditBox" LAnchorPoint="0" LAnchorOffset="0" TAnchorPoint="0" TAnchorOffset="0" RAnchorPoint="1" RAnchorOffset="0" BAnchorPoint="1" BAnchorOffset="0" RelativeToClient="1" Font="Default" Text="" BGColor="UI_WindowBGDefault" TextColor="UI_WindowTextDefault" Template="Default" TooltipType="OnCursor" Name="Clipboard" TooltipColor="" Visible="0" HideInEditor="1"/>
     </Form>

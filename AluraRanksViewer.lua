@@ -1,6 +1,9 @@
 local AluraRanksViewer = {
   arData = {},
   bRaidOnly = false,
+  nVScrollPos = 0,
+  nSortColumn = 0,
+  bSortAscending = true,
 }
 
 local knColumns     = string.byte("R") - string.byte("A") + 1
@@ -81,6 +84,10 @@ function AluraRanksViewer:UpdateGrid()
   for _,arRow in ipairs(self.arData) do
     self:AddRow(wndGrid, arRow)
   end
+  if self.nSortColumn > 0 then
+    wndGrid:SetSortColumn(self.nSortColumn, self.bSortAscending)
+  end
+  wndGrid:SetVScrollPos(self.nVScrollPos)
 end
 
 function AluraRanksViewer:AddRow(wndGrid, arRow)
@@ -92,6 +99,18 @@ function AluraRanksViewer:AddRow(wndGrid, arRow)
   local nRow = wndGrid:AddRow("blah")
   wndGrid:SetCellText(nRow, 1, strName)
   wndGrid:SetCellText(nRow, 2, strRank)
+  wndGrid:SetCellSortText(nRow, 2, strRank..strName)
+end
+
+function AluraRanksViewer:OnMouseButtonUp(wndHandler, wndControl)
+  local wndGrid = self.wndMain:FindChild("Grid")
+  self.nSortColumn = wndGrid:GetSortColumn()
+  self.bSortAscending = wndGrid:IsSortAscending()
+end
+
+function AluraRanksViewer:OnMouseWheel(wndHandler, wndControl)
+  local wndGrid = self.wndMain:FindChild("Grid")
+  self.nVScrollPos = wndGrid:GetVScrollPos()
 end
 
 function AluraRanksViewer:OnClose(wndHandler, wndControl)
@@ -105,6 +124,9 @@ function AluraRanksViewer:OnSave(eLevel)
   return {
     arData = self.arData,
     bRaidOnly = self.bRaidOnly,
+    nSortColumn = self.nSortColumn,
+    bSortAscending = self.bSortAscending,
+    nVScrollPos = self.nVScrollPos,
   }
 end
 
@@ -112,6 +134,9 @@ function AluraRanksViewer:OnRestore(eLevel, tSave)
   if eLevel ~= GameLib.CodeEnumAddonSaveLevel.Realm then return end
   self.arData = tSave.arData
   self.bRaidOnly = tSave.bRaidOnly
+  self.nSortColumn = tSave.nSortColumn
+  self.bSortAscending = tSave.bSortAscending
+  self.nVScrollPos = tSave.nVScrollPos
 end
 
 function AluraRanksViewer:new(o)
