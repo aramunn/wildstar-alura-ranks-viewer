@@ -4,11 +4,15 @@ local AluraRanksViewer = {
   nVScrollPos = 0,
   nSortColumn = 0,
   bSortAscending = true,
+  
+  tRaiders = {},
 }
 
 local knColumns     = string.byte("R") - string.byte("A") + 1
 local knNameColumn  = string.byte("A") - string.byte("A") + 1
 local knRankColumn  = string.byte("R") - string.byte("A") + 1
+
+local ktNameMap = {}
 
 function AluraRanksViewer:FindSystemChannel()
   for idx, channelCurrent in ipairs(ChatSystemLib.GetChannels()) do
@@ -81,6 +85,7 @@ function AluraRanksViewer:UpdateGrid()
   local wndGrid = self.wndMain:FindChild("Grid")
   wndGrid:DeleteAll()
   if not self.arData then return end
+  self:UpdateRaiders()
   for _,arRow in ipairs(self.arData) do
     self:AddRow(wndGrid, arRow)
   end
@@ -90,12 +95,21 @@ function AluraRanksViewer:UpdateGrid()
   wndGrid:SetVScrollPos(self.nVScrollPos)
 end
 
+function AluraRanksViewer:UpdateRaiders()
+  self.tRaiders = {}
+  local nMemberCount = GroupLib.GetMemberCount()
+  for nIdx = 1, nMemberCount do
+    local tMember = GroupLib.GetGroupMember(nIdx)
+    local strName = tMember.strCharacterName
+    strName = ktNameMap[strName] or strName
+    self.tRaiders[strName] = true
+  end
+end
+
 function AluraRanksViewer:AddRow(wndGrid, arRow)
   local strName = arRow[knNameColumn]
   local strRank = arRow[knRankColumn]
-  if self.bRaidOnly then
-    --TODO
-  end
+  if self.bRaidOnly and not self.tRaiders[strName] then return end
   local nRow = wndGrid:AddRow("blah")
   wndGrid:SetCellText(nRow, 1, strName)
   wndGrid:SetCellText(nRow, 2, strRank)
@@ -159,6 +173,10 @@ function AluraRanksViewer:OnDocumentReady()
   if not self.xmlDoc then return end
   if not self.xmlDoc:IsLoaded() then return end
   Apollo.RegisterSlashCommand("arv", "LoadMainWindow", self)
+  Apollo.RegisterEventHandler("Group_Join", "UpdateGrid", self)
+  Apollo.RegisterEventHandler("Group_Left", "UpdateGrid", self)
+  Apollo.RegisterEventHandler("Group_Add", "UpdateGrid", self)
+  Apollo.RegisterEventHandler("Group_Remove", "UpdateGrid", self)
   self:FindSystemChannel()
 end
 
