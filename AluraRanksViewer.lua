@@ -85,6 +85,7 @@ function AluraRanksViewer:ParseCsv(strCsv)
 end
 
 function AluraRanksViewer:UpdateGrid()
+  if not self.wndMain or not self.wndMain:IsValid() then return end
   local wndGrid = self.wndMain:FindChild("Grid")
   wndGrid:DeleteAll()
   if not self.arData then return end
