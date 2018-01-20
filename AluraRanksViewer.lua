@@ -13,8 +13,8 @@ local knNameColumn  = string.byte("A") - string.byte("A") + 1
 local knRankColumn  = string.byte("R") - string.byte("A") + 1
 
 local ktNameMap = {
-  "Aramunn" = "Via Aramunn",
-  "Ele" = "Ele Yasam",
+  ["Aramunn"] = "Via Aramunn",
+  ["Ele"] = "Ele Yasam",
 }
 
 function AluraRanksViewer:FindSystemChannel()
